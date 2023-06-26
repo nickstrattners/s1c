@@ -132,19 +132,7 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 
 const char     CRYPTONOTE_NAME[]                             = "StrattnersOneChain";
 const char     CRYPTONOTE_TICKER[]                           = "S1C";
-const char     GENESIS_COINBASE_TX_HEX[]                     = 
-"01"                                                                // tx version
-"0a"                                                                // unlock time
-"01"                                                                // vin length
-"ff"                                                                // vin type
-"00"                                                                // height
-"01"                                                                // vout length
-"fac484c69cd608"                                                    // output #1 amount
-"02"                                                                // output #1 type
-"9b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071"  // output #1 key (stealth address)
-"21"                                                                // extra length in bytes
-"01"                                                                // extra pubkey tag
-"f904925cc23f86f9f3565188862275dc556a9bdfb6aec22c5aca7f0177c45ba8"; // tx pubkey
+const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff0001bd90e6eb02029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210170d5dfd59f678798dd3c83e50500357bcc6f5a58d5d63c922f19ad7f4df0e267";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.strattners.com";
 
 const uint8_t  CURRENT_TRANSACTION_VERSION                   =  1;
@@ -207,7 +195,7 @@ const uint32_t P2P_IP_BLOCKTIME                              = (60 * 60 * 24);//
 const uint32_t P2P_IP_FAILS_BEFORE_BLOCK                     = 10;
 const uint32_t P2P_IDLE_CONNECTION_KILL_INTERVAL             = (5 * 60);      //5 minutes
 
-const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "8f80f9a5a434a9f1510d13336228debfee9c918ce505efe225d8c94d045fa115";
+const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "1b975cf245ccfb7007380ae6d62c31ff8b0a0dcfd0ac87f1abd19d21eb806c07";
 
 const char* const SEED_NODES[] = { 
   "35.229.38.14:32347",
