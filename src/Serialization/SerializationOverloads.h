@@ -1,21 +1,6 @@
-// Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
-// Copyright (c) 2018-2019, The TurtleCoin Developers
-// Copyright (c) 2016-2019, The Karbo developers
-//
-// This file is part of Karbo.
-//
-// Karbo is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Karbo is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Karbo.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (c) 2011-2016 The Cryptonote developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #pragma once
 
@@ -25,7 +10,6 @@
 #include <cstring>
 #include <list>
 #include <map>
-#include <stdexcept>
 #include <string>
 #include <set>
 #include <type_traits>
@@ -33,10 +17,6 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
-#include <parallel_hashmap/phmap.h>
-
-using phmap::flat_hash_map;
-using phmap::parallel_flat_hash_map;
 
 namespace CryptoNote {
 
@@ -46,16 +26,9 @@ serializeAsBinary(std::vector<T>& value, Common::StringView name, CryptoNote::IS
   std::string blob;
   if (serializer.type() == ISerializer::INPUT) {
     serializer.binary(blob, name);
-    const size_t blobSize = blob.size();
-
-    value.resize(blobSize / sizeof(T));
-
-    if (blobSize % sizeof(T) != 0) {
-      throw std::runtime_error("Invalid blob size given!");
-    }
-
-    if (blobSize > 0) {
-      memcpy(&value[0], blob.data(), blobSize);
+    value.resize(blob.size() / sizeof(T));
+    if (blob.size()) {
+      memcpy(&value[0], blob.data(), blob.size());
     }
   } else {
     if (!value.empty()) {
@@ -73,11 +46,6 @@ serializeAsBinary(std::list<T>& value, Common::StringView name, CryptoNote::ISer
     serializer.binary(blob, name);
 
     size_t count = blob.size() / sizeof(T);
-
-    if (blob.size() % sizeof(T) != 0) {
-      throw std::runtime_error("Invalid blob size given!");
-    }
-
     const T* ptr = reinterpret_cast<const T*>(blob.data());
 
     while (count--) {
@@ -100,10 +68,7 @@ template <typename Cont>
 bool serializeContainer(Cont& value, Common::StringView name, CryptoNote::ISerializer& serializer) {
   size_t size = value.size();
   if (!serializer.beginArray(size, name)) {
-    if (serializer.type() == ISerializer::INPUT) {
-      value.clear();
-    }
-
+    value.clear();
     return false;
   }
 
@@ -150,10 +115,7 @@ bool serializeMap(MapT& value, Common::StringView name, CryptoNote::ISerializer&
   size_t size = value.size();
 
   if (!serializer.beginArray(size, name)) {
-    if (serializer.type() == ISerializer::INPUT) {
-      value.clear();
-    }
-
+    value.clear();
     return false;
   }
 
@@ -189,10 +151,7 @@ bool serializeSet(SetT& value, Common::StringView name, CryptoNote::ISerializer&
   size_t size = value.size();
 
   if (!serializer.beginArray(size, name)) {
-    if (serializer.type() == ISerializer::INPUT) {
-      value.clear();
-    }
-
+    value.clear();
     return false;
   }
 
@@ -225,16 +184,6 @@ bool serialize(std::set<K, Cmp>& value, Common::StringView name, CryptoNote::ISe
 template<typename K, typename V, typename Hash>
 bool serialize(std::unordered_map<K, V, Hash>& value, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializeMap(value, name, serializer, [&value](size_t size) { value.reserve(size); });
-}
-
-template<typename K, typename V, typename Hash>
-bool serialize(flat_hash_map<K, V, Hash>& value, Common::StringView name, CryptoNote::ISerializer& serializer) {
-  return serializeMap(value, name, serializer, [](size_t size) {});
-}
-
-template<typename K, typename V, typename Hash>
-bool serialize(parallel_flat_hash_map<K, V, Hash>& value, Common::StringView name, CryptoNote::ISerializer& serializer) {
-  return serializeMap(value, name, serializer, [](size_t size) {});
 }
 
 template<typename K, typename V, typename Hash>
@@ -276,10 +225,7 @@ void writeSequence(Iterator begin, Iterator end, Common::StringView name, ISeria
 template <typename Element, typename Iterator>
 void readSequence(Iterator outputIterator, Common::StringView name, ISerializer& s) {
   size_t size = 0;
-  // array of zero size is not written in KVBinaryOutputStreamSerializer
-  if (!s.beginArray(size, name)) {
-    return;
-  }
+  s.beginArray(size, name);
 
   while (size--) {
     Element e;

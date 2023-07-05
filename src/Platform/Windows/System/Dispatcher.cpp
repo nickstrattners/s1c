@@ -1,26 +1,10 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Karbo.
-//
-// Karbo is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Karbo is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Karbo.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (c) 2011-2016 The Cryptonote developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "Dispatcher.h"
-
 #include <cassert>
-#include <stdexcept>
 #include <string>
-
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -68,7 +52,6 @@ Dispatcher::Dispatcher() {
         mainContext.group = &contextGroup;
         mainContext.groupPrev = nullptr;
         mainContext.groupNext = nullptr;
-        mainContext.inExecutionQueue = false;
         contextGroup.firstContext = nullptr;
         contextGroup.lastContext = nullptr;
         contextGroup.firstWaiter = nullptr;
@@ -80,11 +63,11 @@ Dispatcher::Dispatcher() {
         return;
       }
 
-      result = CloseHandle(completionPort);
-      assert(result == TRUE);
+      BOOL result2 = CloseHandle(completionPort);
+      assert(result2 == TRUE);
     }
 
-    result = ConvertFiberToThread();
+    BOOL result2 = ConvertFiberToThread();
     assert(result == TRUE);
   }
   
@@ -93,7 +76,7 @@ Dispatcher::Dispatcher() {
 }
 
 Dispatcher::~Dispatcher() {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   for (NativeContext* context = contextGroup.firstContext; context != nullptr; context = context->groupNext) {
     interrupt(context);
   }
@@ -120,7 +103,7 @@ Dispatcher::~Dispatcher() {
 }
 
 void Dispatcher::clear() {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   while (firstReusableContext != nullptr) {
     void* fiber = firstReusableContext->fiber;
     firstReusableContext = firstReusableContext->next;
@@ -129,9 +112,14 @@ void Dispatcher::clear() {
 }
 
 void Dispatcher::dispatch() {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   NativeContext* context;
   for (;;) {
+    if (firstResumingContext != nullptr) {
+      context = firstResumingContext;
+      firstResumingContext = context->next;
+      break;
+    }
 
     LARGE_INTEGER frequency;
     LARGE_INTEGER ticks;
@@ -148,8 +136,6 @@ void Dispatcher::dispatch() {
     if (firstResumingContext != nullptr) {
       context = firstResumingContext;
       firstResumingContext = context->next;
-      //assert(context->inExecutionQueue);
-      context->inExecutionQueue = false;
       break;
     }
 
@@ -192,7 +178,7 @@ void Dispatcher::dispatch() {
 }
 
 NativeContext* Dispatcher::getCurrentContext() const {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   return currentContext;
 }
 
@@ -201,7 +187,7 @@ void Dispatcher::interrupt() {
 }
 
 void Dispatcher::interrupt(NativeContext* context) {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   assert(context != nullptr);
   if (!context->interrupted) {
     if (context->interruptProcedure != nullptr) {
@@ -223,13 +209,9 @@ bool Dispatcher::interrupted() {
 }
 
 void Dispatcher::pushContext(NativeContext* context) {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   assert(context != nullptr);
-  if (context->inExecutionQueue) {
-    return;
-  }
   context->next = nullptr;
-  context->inExecutionQueue = true;
   if (firstResumingContext != nullptr) {
     assert(lastResumingContext->next == nullptr);
     lastResumingContext->next = context;
@@ -255,7 +237,7 @@ void Dispatcher::remoteSpawn(std::function<void()>&& procedure) {
 }
 
 void Dispatcher::spawn(std::function<void()>&& procedure) {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   NativeContext* context = &getReusableContext();
   if (contextGroup.firstContext != nullptr) {
     context->groupPrev = contextGroup.lastContext;
@@ -276,7 +258,7 @@ void Dispatcher::spawn(std::function<void()>&& procedure) {
 }
 
 void Dispatcher::yield() {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   for (;;) {
     LARGE_INTEGER frequency;
     LARGE_INTEGER ticks;
@@ -331,7 +313,7 @@ void Dispatcher::yield() {
 }
 
 void Dispatcher::addTimer(uint64_t time, NativeContext* context) {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   timers.insert(std::make_pair(time, context));
 }
 
@@ -363,10 +345,7 @@ void Dispatcher::pushReusableContext(NativeContext& context) {
 }
 
 void Dispatcher::interruptTimer(uint64_t time, NativeContext* context) {
-  //assert(GetCurrentThreadId() == threadId);
-  if (context->inExecutionQueue) {
-    return;
-  }
+  assert(GetCurrentThreadId() == threadId);
   auto range = timers.equal_range(time);
   for (auto it = range.first; ; ++it) {
     assert(it != range.second);
@@ -379,12 +358,11 @@ void Dispatcher::interruptTimer(uint64_t time, NativeContext* context) {
 }
 
 void Dispatcher::contextProcedure() {
-  //assert(GetCurrentThreadId() == threadId);
+  assert(GetCurrentThreadId() == threadId);
   assert(firstReusableContext == nullptr);
   NativeContext context;
   context.interrupted = false;
   context.next = nullptr;
-  context.inExecutionQueue = false;
   firstReusableContext = &context;
   SwitchToFiber(currentContext->fiber);
   for (;;) {

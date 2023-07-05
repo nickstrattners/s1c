@@ -1,19 +1,6 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Karbo.
-//
-// Karbo is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Karbo is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Karbo.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (c) 2011-2016 The Cryptonote developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #pragma once
 
@@ -29,10 +16,9 @@ struct NativeContextGroup;
 
 struct NativeContext {
   void* uctx;
-  void* stackPtr{nullptr};
+  void* stackPtr;
   bool interrupted;
-  bool inExecutionQueue;
-  NativeContext* next{nullptr};
+  NativeContext* next;
   NativeContextGroup* group;
   NativeContext* groupPrev;
   NativeContext* groupNext;
@@ -74,7 +60,11 @@ public:
   int getTimer();
   void pushTimer(int timer);
 
-static const int SIZEOF_PTHREAD_MUTEX_T = sizeof(pthread_mutex_t);
+#ifdef __LP64__
+  static const int SIZEOF_PTHREAD_MUTEX_T = 56 + sizeof(long);
+#else
+  static const int SIZEOF_PTHREAD_MUTEX_T = 40 + sizeof(long);
+#endif
 
 private:
   void spawn(std::function<void()>&& procedure);

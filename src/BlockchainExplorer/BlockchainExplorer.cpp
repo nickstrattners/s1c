@@ -1,19 +1,6 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Karbo.
-//
-// Karbo is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Karbo is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Karbo.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (c) 2011-2016 The Cryptonote developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "BlockchainExplorer.h"
 
@@ -459,13 +446,7 @@ uint64_t BlockchainExplorer::getFullRewardMaxBlockSize(uint8_t majorVersion) {
     throw std::system_error(make_error_code(CryptoNote::error::BlockchainExplorerErrorCodes::NOT_INITIALIZED));
   }
 
-  if (majorVersion >= BLOCK_MAJOR_VERSION_3) {
-    return parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
-  } else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
-    return parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
-  } else {
-    return parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
-  }
+  return parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 }
 
 bool BlockchainExplorer::isSynchronized() {

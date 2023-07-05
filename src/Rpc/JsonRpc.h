@@ -1,20 +1,6 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-// Copyright (c) 2016-2022, The Karbo developers
-//
-// This file is part of Karbo.
-//
-// Karbo is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Karbo is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Karbo.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (c) 2011-2016 The Cryptonote developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #pragma once
 
@@ -23,10 +9,7 @@
 #include <functional>
 
 #include "CoreRpcServerCommandsDefinitions.h"
-#include "Common/JsonValue.h"
-#include "Common/base64.hpp"
-#include "Common/StringTools.h"
-#include "HTTP/httplib.h"
+#include <Common/JsonValue.h>
 #include "Serialization/ISerializer.h"
 #include "Serialization/SerializationTools.h"
 
@@ -189,40 +172,19 @@ private:
 };
 
 
-void invokeJsonRpcCommand(httplib::Client& httpClient, JsonRpcRequest& req, JsonRpcResponse& res, const std::string& user = "", const std::string& password = "");
+void invokeJsonRpcCommand(HttpClient& httpClient, JsonRpcRequest& req, JsonRpcResponse& res);
 
 template <typename Request, typename Response>
-void invokeJsonRpcCommand(httplib::Client& httpClient, const std::string& method, const Request& req, Response& res, const std::string& user = "", const std::string& password = "") {
+void invokeJsonRpcCommand(HttpClient& httpClient, const std::string& method, const Request& req, Response& res) {
   JsonRpcRequest jsReq;
   JsonRpcResponse jsRes;
 
   jsReq.setMethod(method);
   jsReq.setParams(req);
 
-  invokeJsonRpcCommand(httpClient, jsReq, jsRes, user, password);
+  invokeJsonRpcCommand(httpClient, jsReq, jsRes);
 
   jsRes.getResult(res);
-}
-
-template <typename Request, typename Response>
-void invokeJsonCommand(httplib::Client& client, const std::string& url, const Request& req, Response& res, const std::string& user = "", const std::string& password = "") {
-  httplib::Request hreq;
-  httplib::Response hres;
-
-
-  if (!user.empty() || !password.empty()) {
-    client.set_basic_auth(user.c_str(), password.c_str());
-  }
-
-  auto rsp = client.Post(url.c_str(), storeToJson(req), "application/json");
-
-  if (!rsp || rsp->status != 200) {
-    throw std::runtime_error("JSON-RPC call failed");
-  }
-
-  if (!loadFromJson(res, rsp->body)) {
-    throw std::runtime_error("Failed to parse JSON response");
-  }
 }
 
 template <typename Request, typename Response, typename Handler>

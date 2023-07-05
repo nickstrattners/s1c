@@ -1,29 +1,15 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Karbo.
-//
-// Karbo is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Karbo is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Karbo.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (c) 2011-2016 The Cryptonote developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "Util.h"
 #include <cstdio>
 
 #include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
 
 #include "CryptoNoteConfig.h"
 
-#ifdef _WIN32
+#ifdef WIN32
 #include <windows.h>
 #include <shlobj.h>
 #include <strsafe.h>
@@ -305,13 +291,9 @@ std::string get_nix_version_display_string()
     // Mac: ~/Library/Application Support/CRYPTONOTE_NAME
     // Unix: ~/.CRYPTONOTE_NAME
     std::string config_folder;
-
-#ifdef _WIN32
+#ifdef WIN32
     // Windows
     config_folder = get_special_folder_path(CSIDL_APPDATA, true) + "/" + CryptoNote::CRYPTONOTE_NAME;
-#ifdef USE_LITE_WALLET
-    config_folder = "./";
-#endif
 #else
     std::string pathRet;
     char* pszHome = getenv("HOME");
@@ -319,29 +301,16 @@ std::string get_nix_version_display_string()
       pathRet = "/";
     else
       pathRet = pszHome;
-#ifdef __APPLE__
+#ifdef MAC_OSX
     // Mac
-    std::string old_config_folder = (pathRet + "/." + CryptoNote::CRYPTONOTE_NAME);
-    std::string pathRet2 = (pathRet + "/" + "Library/Application Support");
-    config_folder =  (pathRet2 + "/" + CryptoNote::CRYPTONOTE_NAME);
-    // move to correct location
-    boost::filesystem::path old_path(old_config_folder);
-    if (!boost::filesystem::exists(config_folder) && boost::filesystem::is_directory(old_path)) {
-      if (boost::filesystem::create_directory(config_folder)) {
-        for (const auto& entry : boost::filesystem::recursive_directory_iterator{old_path}) {
-          const auto& path = entry.path();
-          auto rel_path_str = path.string();
-          boost::replace_first(rel_path_str, old_path.string(), "");
-          boost::filesystem::copy(path, config_folder + boost::filesystem::path::preferred_separator + rel_path_str);
-        }
-        boost::filesystem::remove_all(old_path);
-      }
-    }
+    pathRet /= "Library/Application Support";
+    config_folder =  (pathRet + "/" + CryptoNote::CRYPTONOTE_NAME);
 #else
     // Unix
     config_folder = (pathRet + "/." + CryptoNote::CRYPTONOTE_NAME);
 #endif
 #endif
+
     return config_folder;
   }
 
