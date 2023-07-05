@@ -173,10 +173,10 @@ const uint8_t  P2P_MINIMUM_VERSION                           = 1;
 
 // This defines the number of versions ahead we must see peers before
 // we start displaying warning messages that we need to upgrade our software
-const uint8_t  P2P_UPGRADE_WINDOW                            = 1;
+const uint8_t  P2P_UPGRADE_WINDOW                            = 2;
 
 // This defines the minimum P2P version required for lite blocks propogation
-const uint8_t  P2P_LITE_BLOCKS_PROPOGATION_VERSION           = 1;
+const uint8_t  P2P_LITE_BLOCKS_PROPOGATION_VERSION           = 3;
 
 const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 64 * 1024 * 1024; // 64 MB
 const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 12;
