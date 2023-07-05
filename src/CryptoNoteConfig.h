@@ -134,7 +134,7 @@ namespace CryptoNote
 
   const char CRYPTONOTE_NAME[] = "strattnersonechain";
   const char CRYPTONOTE_TICKER[] = "S1C";
-  const char GENESIS_COINBASE_TX_HEX[] = "";
+  const char GENESIS_COINBASE_TX_HEX[] = "010a01ff0001bbc82e029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101ce0a9ce7b77b76a13b312503114ad239a41529afb14f4df544af939ee1375b80";
   const char DNS_CHECKPOINTS_HOST[] = "checkpoints.strattners.com";
 
   const uint8_t CURRENT_TRANSACTION_VERSION = 1;
