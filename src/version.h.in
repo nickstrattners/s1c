@@ -2,7 +2,7 @@
 #define STR(x) STR_HELPER(x)
 
 #define PROJECT_NAME "StrattnersOneChain"
-#define PROJECT_SITE "https://www.strattners.com"
+#define PROJECT_SITE "https://s1c.strattners.com"
 #define PROJECT_COPYRIGHT "Copyright 2022-2023, Strattners Developers"
 #define APP_VER_MAJOR @PROJECT_VERSION_MAJOR@
 #define APP_VER_MINOR @PROJECT_VERSION_MINOR@

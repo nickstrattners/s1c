@@ -33,10 +33,10 @@ const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DI
 const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
 const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
 const size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
-const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 111; // addresses start with "K"
+const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 15445; // (0x3c15) addresses start with "S1"
 const uint64_t CRYPTONOTE_TX_PROOF_BASE58_PREFIX             = 3576968; // (0x369488), starts with "Proof..."
-const uint64_t CRYPTONOTE_RESERVE_PROOF_BASE58_PREFIX        = 44907175188; // (0xa74ad1d14), starts with "RsrvPrf..."
-const uint64_t CRYPTONOTE_KEYS_SIGNATURE_BASE58_PREFIX       = 176103705; // (0xa7f2119), starts with "SigV1..."
+const uint64_t CRYPTONOTE_RESERVE_PROOF_BASE58_PREFIX        = 7669794109797; // (0xa905dc728695), starts with "S1rsrvprf..."
+const uint64_t CRYPTONOTE_KEYS_SIGNATURE_BASE58_PREFIX       = 155157; // (0x3c595), starts with "S1ks..."
 const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 10;
 const size_t   CRYPTONOTE_TX_SPENDABLE_AGE                   = 6;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = DIFFICULTY_TARGET * 7;
@@ -132,7 +132,7 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 
 const char     CRYPTONOTE_NAME[]                             = "StrattnersOneChain";
 const char     CRYPTONOTE_TICKER[]                           = "S1C";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff0001bd90e6eb02029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210170d5dfd59f678798dd3c83e50500357bcc6f5a58d5d63c922f19ad7f4df0e267";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.strattners.com";
 
 const uint8_t  CURRENT_TRANSACTION_VERSION                   =  1;
@@ -173,10 +173,10 @@ const uint8_t  P2P_MINIMUM_VERSION                           = 1;
 
 // This defines the number of versions ahead we must see peers before
 // we start displaying warning messages that we need to upgrade our software
-const uint8_t  P2P_UPGRADE_WINDOW                            = 2;
+const uint8_t  P2P_UPGRADE_WINDOW                            = 1;
 
 // This defines the minimum P2P version required for lite blocks propogation
-const uint8_t  P2P_LITE_BLOCKS_PROPOGATION_VERSION           = 3;
+const uint8_t  P2P_LITE_BLOCKS_PROPOGATION_VERSION           = 1;
 
 const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 64 * 1024 * 1024; // 64 MB
 const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 12;

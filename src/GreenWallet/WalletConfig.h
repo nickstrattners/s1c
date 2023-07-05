@@ -27,7 +27,7 @@ namespace WalletConfig
     const std::string daemonName = "s1cd";
 
     /* The name to call this wallet */
-    const std::string walletName = "GreenWallet";
+    const std::string walletName = "StrattnersWallet";
 
     /* The name of walletd, the programmatic rpc interface to a wallet */
     const std::string walletdName = "walletd";
