@@ -13,7 +13,7 @@ test-debug: build-debug
 all-debug: build-debug
 
 cmake-release:
-	mkdir -p build/release
+	mkdir build/release
 	cd build/release && cmake -D CMAKE_BUILD_TYPE=Release ../..
 
 build-release: cmake-release
