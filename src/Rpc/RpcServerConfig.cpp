@@ -29,7 +29,7 @@ namespace CryptoNote {
 
   namespace {
 
-    const std::string DEFAULT_RPC_IP = "35.229.38.14";
+    const std::string DEFAULT_RPC_IP = "127.0.0.1";
     const uint16_t DEFAULT_RPC_PORT = RPC_DEFAULT_PORT;
     const uint16_t DEFAULT_RPC_SSL_PORT = RPC_DEFAULT_SSL_PORT;
     const std::string DEFAULT_RPC_CHAIN_FILE = std::string(RPC_DEFAULT_CHAIN_FILE);
