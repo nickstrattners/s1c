@@ -132,7 +132,7 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 
 const char     CRYPTONOTE_NAME[]                             = "StrattnersOneChain";
 const char     CRYPTONOTE_TICKER[]                           = "S1C";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff0001bd90e6eb02029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101f7a358896f95426721222715ad4b6a3fcf08f1bf2fc72cad4e4990a5192010ba";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.strattners.com";
 
 const uint8_t  CURRENT_TRANSACTION_VERSION                   =  1;
